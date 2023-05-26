@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>NoteFixer</title>
+        <link rel="stylesheet" href="/static/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        />
+    </head>
+    <body>
+        <button onclick="toggleDarkMode()">DarkMode</button>
+        <h1>Fixed Notes</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Content</th>
+                    <th>Copy</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in gpted_data %}
+                <tr>
+                    <td class="timestamp" data-th="Filename">
+                        {{ item.filename }}
+                    </td>
+                    <td class="content" data-th="Content">
+                        {{ item.content }}
+                    </td>
+                    <td class="copy-icon" data-th="Copy">
+                        <a class="copy-icon" data-th="Copy" href="#">
+                            <i class="fa fa-copy"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <script>
+            function toggleDarkMode() {
+                document.body.classList.toggle("dark-mode");
+            }
+            const timestamps = document.querySelectorAll(".timestamp");
+            for (let i = 0; i < timestamps.length; i++) {
+                const timestampText = timestamps[i].textContent;
+                const numbersOnly = timestampText.replace(/[^\d]/g, ""); // remove non-numeric characters
+                const year = numbersOnly.slice(0, 4);
+                const month = numbersOnly.slice(4, 6);
+                const day = numbersOnly.slice(6, 8);
+                const hour = numbersOnly.slice(8, 10);
+                const minute = numbersOnly.slice(10, 12);
+                const second = numbersOnly.slice(12, 14);
+                const date = new Date(
+                    year,
+                    month - 1,
+                    day,
+                    hour,
+                    minute,
+                    second
+                );
+                timestamps[i].textContent = date.toLocaleString();
+            }
+            const copyIcons = document.querySelectorAll(".copy-icon");
+            for (let i = 0; i < copyIcons.length; i++) {
+                copyIcons[i].addEventListener("click", () => {
+                    const content =
+                        copyIcons[i].parentNode.querySelector(
+                            ".content"
+                        ).textContent;
+                    navigator.clipboard.writeText(content);
+                });
+            }
+        </script>
+    </body>
+</html>
